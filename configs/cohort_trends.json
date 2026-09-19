@@ -1,0 +1,17 @@
+{
+  "base_config": "configs/competition.json",
+  "overrides": {
+    "n": 240, "firms": 6, "degree": 12, "steps": 66,
+    "initial_dispute": 0.65,
+    "domestic_capacity": 6, "domestic_implementation_capacity": 12,
+    "customer_capacity": 12,
+    "domestic_prior": 0.5, "customer_prior": 0.5,
+    "belief_spread": 0.3, "domestic_cost": 0.3, "customer_cost": 0.3,
+    "outcome_learning_weight": 0.6, "outcome_prior_strength": 1.0
+  },
+  "schedule": {"cohorts": 8, "spacing": 6, "followup": 24, "preparation_max": 3, "outcome_window": 18},
+  "customer_network": {"customers": 6, "active_customers": 3, "allocation": "degree"},
+  "scenarios": ["base", "no_social", "no_outcomes", "no_actions", "network_ws", "network_ba", "domestic_tight", "customer_tight", "cost_low", "cost_high"],
+  "repeats": 20,
+  "bootstrap_samples": 2000
+}

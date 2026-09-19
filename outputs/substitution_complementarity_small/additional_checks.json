@@ -1,0 +1,6 @@
+{
+  "center_scan_identical": true,
+  "exclusive_and_joint_customer_success_identity": true,
+  "runs": 36,
+  "unique_configurations_per_seed": 15
+}

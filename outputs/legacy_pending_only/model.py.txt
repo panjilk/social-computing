@@ -1,0 +1,201 @@
+"""Synchronous threshold diffusion and a case-based complaint ABM.
+
+All defaults are demonstration assumptions, not empirical estimates.
+"""
+from dataclasses import dataclass, asdict
+import numpy as np
+import pandas as pd
+import networkx as nx
+
+
+@dataclass
+class Config:
+    n: int = 160
+    firms: int = 8
+    steps: int = 50
+    degree: int = 6
+    network: str = 'er'
+    threshold: float = .18
+    threshold_spread: float = .08
+    initial_dispute: float = .6
+    initiator_fraction: float = .08
+    new_dispute_rate: float = 0.
+    response_enabled: bool = True
+    delay: int = 0
+    capacity: int = 3
+    effectiveness: float = .55
+    prevention: float = 0.
+    channels_enabled: bool = False
+    domestic_belief: float = .55
+    external_belief: float = .45
+    belief_spread: float = .2
+    domestic_cost: float = .3
+    external_cost: float = .38
+    multi_extra_cost: float = .05
+    benefit: float = 1.
+    customer_dependence: float = .5
+    external_effect_boost: float = .2
+
+    def __post_init__(self):
+        for key in ('n', 'firms', 'steps', 'degree', 'delay', 'capacity'):
+            value = getattr(self, key)
+            if not isinstance(value, int) or isinstance(value, bool):
+                raise ValueError(f'{key} must be an integer')
+        if not (self.n >= 4 and 1 <= self.firms <= self.n and self.steps > 0):
+            raise ValueError('Invalid population, firms, or horizon')
+        if not (2 <= self.degree < self.n and self.degree % 2 == 0):
+            raise ValueError('degree must be even and in [2,n)')
+        if self.delay < 0 or self.capacity < 0 or self.network not in ('er','ws','ba'):
+            raise ValueError('Invalid response or network configuration')
+        for key in ('threshold','threshold_spread','initial_dispute','initiator_fraction',
+                    'new_dispute_rate','effectiveness','prevention','domestic_belief',
+                    'external_belief','belief_spread','customer_dependence','external_effect_boost'):
+            if not 0 <= getattr(self,key) <= 1:
+                raise ValueError(f'{key} must be in [0,1]')
+        for key in ('domestic_cost','external_cost','multi_extra_cost','benefit'):
+            if not np.isfinite(getattr(self,key)) or getattr(self,key)<0:
+                raise ValueError(f'{key} must be finite and nonnegative')
+
+
+def exposure(graph, active):
+    return np.array([np.mean(active[list(graph.neighbors(i))])
+                     if graph.degree(i) else 0. for i in range(len(active))])
+
+
+def threshold_step(graph, active, thresholds):
+    """Nodes must be numbered 0..n-1. >= includes zero-threshold isolates."""
+    active = np.asarray(active, dtype=bool)
+    return active | (exposure(graph, active) >= np.asarray(thresholds))
+
+
+def baseline(graph, thresholds, seeds, steps=50):
+    active = np.zeros(len(graph), dtype=bool)
+    active[list(seeds)] = True
+    history = [active.copy()]
+    for _ in range(steps):
+        updated = threshold_step(graph, active, thresholds)
+        history.append(updated.copy())
+        if np.array_equal(updated, active):
+            break
+        active = updated
+    return np.asarray(history)
+
+
+def setup(c, seed):
+    streams = np.random.SeedSequence(seed).spawn(4)
+    net, initial, individual, event = [np.random.default_rng(s) for s in streams]
+    netseed = int(net.integers(0, 2**32-1))
+    if c.network == 'er':
+        graph = nx.erdos_renyi_graph(c.n, c.degree/(c.n-1), seed=netseed)
+    elif c.network == 'ws':
+        graph = nx.watts_strogatz_graph(c.n, c.degree, .15, seed=netseed)
+    else:
+        graph = nx.barabasi_albert_graph(c.n, c.degree//2, seed=netseed)
+    firms = initial.permutation(np.arange(c.n) % c.firms)
+    disputed = initial.random(c.n) < c.initial_dispute
+    initiators = initial.random(c.n) < c.initiator_fraction
+    thresholds = np.clip(c.threshold + individual.uniform(-c.threshold_spread,
+                                                       c.threshold_spread, c.n),0,1)
+    # Fixed calendar arrays keep draws aligned despite divergent case histories.
+    arrivals = event.random((c.steps,c.n))
+    outcomes = event.random((c.steps,c.n))
+    return graph, firms, disputed, initiators, thresholds, arrivals, outcomes
+
+
+def simulate(c, seed=0):
+    graph, firms, disputed, initiators, thresholds, arrivals, outcomes = setup(c, seed)
+    cases, events, rows = [], [], []
+    current = {}  # employee -> unresolved case
+    ever = set()
+    protected = np.zeros(c.firms, dtype=bool)
+    previous = np.zeros(c.n, dtype=bool)
+
+    def log(t, case, kind):
+        events.append(dict(time=t, case_id=case['case_id'], employee=case['employee'],event=kind))
+
+    def create(i, t):
+        case = dict(case_id=f'{i}:{t}',employee=i,firm=int(firms[i]),created=t,
+                    submitted=None,responded=None,resolved=None,status='unsubmitted',
+                    attempts=0,channels='',compensation=0.)
+        cases.append(case)
+        current[i] = case
+        log(t,case,'created')
+
+    for i in np.flatnonzero(disputed):
+        create(int(i),0)
+    for t in range(c.steps):
+        new = int(disputed.sum()) if t == 0 else 0
+        if t > 0:
+            for i in range(c.n):
+                rate = c.new_dispute_rate * (1-c.prevention*protected[firms[i]])
+                if i not in current and arrivals[t,i] < rate:
+                    create(i,t)
+                    new += 1
+        signal = exposure(graph, previous)
+        submitted = []
+        eligible = blocked = abstained = 0
+        for i, case in sorted(current.items()):
+            if case['status'] != 'unsubmitted':
+                continue
+            eligible += 1
+            if not (initiators[i] or signal[i] >= thresholds[i]):
+                blocked += 1
+                continue
+            channels = ('domestic',)
+            if c.channels_enabled:
+                from .channels import choose_channels
+                channels = choose_channels(i, seed, c)
+                if not channels:
+                    abstained += 1
+                    continue
+            case.update(submitted=t,status='pending',channels='|'.join(channels))
+            log(t,case,'received')
+            submitted.append(case)
+            ever.add(i)
+        solved = []
+        if c.response_enabled:
+            for f in range(c.firms):
+                queue = sorted([v for v in current.values() if v['firm']==f and
+                                v['status']=='pending' and t-v['submitted']>=c.delay],
+                               key=lambda v:(v['attempts'],v['submitted'],v['employee']))
+                # Response is an acknowledgement, independent of processing capacity.
+                for case in queue:
+                    if case['responded'] is None:
+                        case['responded'] = t
+                        log(t,case,'responded')
+                for case in queue[:c.capacity]:
+                    case['attempts'] += 1
+                    log(t,case,'attempted')
+                    p = c.effectiveness
+                    if c.channels_enabled:
+                        from .channels import objective_probability
+                        p = objective_probability(p, case['channels'], c)
+                    if outcomes[t,case['employee']] < p:
+                        case.update(resolved=t,status='resolved',compensation=1.)
+                        log(t,case,'resolved')
+                        solved.append(case)
+                        protected[f] = True
+        for case in solved:
+            del current[case['employee']]
+        pending = [v for v in current.values() if v['status']=='pending']
+        # A zero-delay complaint can be received and resolved before next snapshot.
+        previous = np.zeros(c.n,dtype=bool)
+        previous[[v['employee'] for v in pending]] = True
+        rows.append(dict(time=t,new_disputes=new,new_complaints=len(submitted),
+                         new_complainants=len({v['employee'] for v in submitted}),
+                         unresolved=len(current),pending=len(pending),new_resolved=len(solved),
+                         cumulative_resolved=sum(v['status']=='resolved' for v in cases),
+                         cumulative_complainants=len(ever),total_cases=len(cases),
+                         unsubmitted=len(current)-len(pending),eligible_unsubmitted=eligible,
+                         threshold_blocked=blocked,utility_abstained=abstained,
+                         domestic_submissions=sum('domestic' in v['channels'] for v in submitted),
+                         external_submissions=sum('external_customer' in v['channels'] for v in submitted),
+                         multi_submissions=sum('|' in v['channels'] for v in submitted)))
+    case_df = pd.DataFrame(cases, columns=['case_id','employee','firm','created','submitted',
+        'responded','resolved','status','attempts','channels','compensation'])
+    for col in ('created','submitted','responded','resolved'):
+        case_df[col] = pd.to_numeric(case_df[col])
+    case_df['processing_time'] = case_df.resolved-case_df.submitted
+    case_df['dispute_duration'] = case_df.resolved-case_df.created
+    case_df['observed_pending_time'] = (case_df.resolved.fillna(c.steps-1)-case_df.submitted)
+    return pd.DataFrame(rows),case_df,pd.DataFrame(events,columns=['time','case_id','employee','event'])

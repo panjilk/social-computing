@@ -1,0 +1,10 @@
+{
+  "base_config": "configs/cohort_trends.json",
+  "repeats": 20,
+  "bootstrap_samples": 2000,
+  "support_probabilities": [0.2, 0.55, 0.9],
+  "domestic_delays": [0, 2, 6],
+  "material_rate": 0.7,
+  "objective_material_bonus": 0.3,
+  "subjective_material_bonus": 0.18
+}

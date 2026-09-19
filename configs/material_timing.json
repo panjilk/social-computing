@@ -1,0 +1,10 @@
+{
+  "base_config": "configs/cohort_trends.json",
+  "axes": ["implementation"],
+  "implementation_delays": [0, 1, 4, 8],
+  "repeats": 20,
+  "bootstrap_samples": 2000,
+  "material_rate": 0.7,
+  "objective_material_bonus": 0.3,
+  "subjective_material_bonus": 0.18
+}

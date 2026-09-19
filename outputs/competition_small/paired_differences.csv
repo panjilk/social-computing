@@ -1,0 +1,7 @@
+comparison,metric,n,mean_difference,sd_difference,se_difference
+both - domestic_only,domestic_use,2,-0.0357142857142857,0.05050762722761051,0.03571428571428569
+both - domestic_only,resolved_share,2,0.03571428571428571,0.050507627227610534,0.03571428571428571
+both - domestic_only,unresolved_case_rounds,2,-4.0,5.656854249492381,4.0
+both - customer_only,customer_use,2,-0.09375,0.13258252147247765,0.09374999999999999
+both - customer_only,resolved_share,2,0.19642857142857142,0.07576144084141581,0.05357142857142857
+both - customer_only,unresolved_case_rounds,2,-31.5,19.091883092036785,13.5

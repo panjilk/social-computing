@@ -1,0 +1,15 @@
+{
+  "n": 120, "firms": 6, "degree": 6, "steps": 45,
+  "initial_dispute": 0.65, "new_dispute_rate": 0.0,
+  "material_rate": 0.0, "evidence_help": 0.0,
+  "perceived_evidence_bonus": 0.0, "prevention": 0.0,
+  "domestic_information": 0.0,
+  "domestic_success": 0.55, "domestic_delay": 2, "domestic_capacity": 12,
+  "domestic_implementation_enabled": true, "domestic_implementation_delay": 1,
+  "domestic_implementation_capacity": 12, "domestic_implementation_success": 0.85,
+  "customer_delay": 2, "customer_capacity": 12,
+  "firm_response_enabled": true, "firm_delay": 1, "firm_capacity": 3,
+  "allow_escalation": true, "escalation_wait": 3,
+  "observation_mode": "pending_or_recent", "social_weight": 0.2,
+  "outcome_learning_weight": 0.3
+}

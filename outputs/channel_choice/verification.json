@@ -1,0 +1,10 @@
+{
+  "tests_run": 35,
+  "tests_passed": true,
+  "batch_runs": 520,
+  "trajectory_rows": 23400,
+  "case_rows": 42590,
+  "batch_accounting_passed": true,
+  "fixed_cohort_cases": 1144,
+  "fixed_cohort_pairing_passed": true
+}

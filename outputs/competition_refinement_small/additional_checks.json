@@ -1,0 +1,18 @@
+{
+  "historical_base_metrics_identical": true,
+  "exclusive_paths_and_first_choices_sum_to_one": true,
+  "random_ties_changed_any_baseline_usage": false,
+  "runs": 54,
+  "seed0_shared_decisions": 3525,
+  "seed0_changed_choices_on_shared_decisions": 5,
+  "seed0_learned_wait_range": {
+    "expected_wait_d": [
+      2.428571428571429,
+      3.0
+    ],
+    "expected_wait_e": [
+      2.5,
+      3.0
+    ]
+  }
+}

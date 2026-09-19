@@ -1,0 +1,9 @@
+{
+  "base_config": "configs/cohort_trends.json",
+  "means": [0.1, 0.3, 0.5, 0.7, 0.9],
+  "spread": 0.1,
+  "narrow_spread": 0.05,
+  "repeats": 20,
+  "bootstrap_samples": 2000,
+  "variants": ["main", "no_perceived", "no_objective", "narrow", "limited_access"]
+}

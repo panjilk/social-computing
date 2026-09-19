@@ -1,0 +1,15 @@
+{
+  "base_config": "configs/cohort_trends.json",
+  "n": 120,
+  "steps": 164,
+  "repeats": 20,
+  "bootstrap_samples": 2000,
+  "rhos": [0.0, 0.6],
+  "shocks": ["none", "objective", "information"],
+  "windows": {"before": [10, 40], "early_after": [60, 90], "late_after": [110, 140]},
+  "followup": 24,
+  "dynamics": {"arrival_rate": 0.02, "initial_knowledge": 0.15, "shock_time": 50, "active_horizon": 48,
+    "review_bonus": 0.25, "announcement_fraction": 0.2, "prevention_strength": 0.8,
+    "pressure_scale": 20.0, "prevention_cost": 0.08, "adaptation": 0.2},
+  "extra_horizons": [96]
+}

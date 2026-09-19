@@ -1,0 +1,11 @@
+{
+  "runs": 72,
+  "tests": 80,
+  "passed": true,
+  "world_pairing": true,
+  "case_pairing": true,
+  "usage_accounting": true,
+  "mirror_checks": 48,
+  "mirror_mismatches": 0,
+  "exact_tie_choice": "d"
+}

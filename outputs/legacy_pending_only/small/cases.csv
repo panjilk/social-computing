@@ -1,0 +1,15 @@
+case_id,employee,firm,created,submitted,responded,resolved,status,attempts,channels,compensation,processing_time,dispute_duration,observed_pending_time
+0:0,0,1,0,,,,unsubmitted,0,,0.0,,,
+2:0,2,1,0,,,,unsubmitted,0,,0.0,,,
+3:0,3,0,0,,,,unsubmitted,0,,0.0,,,
+4:0,4,0,0,,,,unsubmitted,0,,0.0,,,
+8:0,8,0,0,,,,unsubmitted,0,,0.0,,,
+9:0,9,1,0,,,,unsubmitted,0,,0.0,,,
+11:0,11,1,0,,,,unsubmitted,0,,0.0,,,
+12:0,12,1,0,,,,unsubmitted,0,,0.0,,,
+14:0,14,0,0,,,,unsubmitted,0,,0.0,,,
+16:0,16,0,0,,,,unsubmitted,0,,0.0,,,
+18:0,18,2,0,,,,unsubmitted,0,,0.0,,,
+19:0,19,2,0,0.0,0.0,0.0,resolved,1,domestic,1.0,0.0,0.0,0.0
+20:0,20,1,0,,,,unsubmitted,0,,0.0,,,
+23:0,23,0,0,,,,unsubmitted,0,,0.0,,,

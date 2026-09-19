@@ -1,0 +1,40 @@
+{
+  "config": {
+    "n": 160,
+    "firms": 8,
+    "steps": 50,
+    "degree": 6,
+    "network": "er",
+    "threshold": 0.18,
+    "threshold_spread": 0.08,
+    "initial_dispute": 0.6,
+    "initiator_fraction": 0.08,
+    "new_dispute_rate": 0.0,
+    "response_enabled": true,
+    "delay": 0,
+    "capacity": 3,
+    "effectiveness": 0.55,
+    "prevention": 0.0,
+    "channels_enabled": true,
+    "observation_mode": "pending_or_recent",
+    "visibility_window": 3,
+    "domestic_belief": 0.55,
+    "external_belief": 0.45,
+    "belief_spread": 0.2,
+    "domestic_cost": 0.3,
+    "external_cost": 0.38,
+    "multi_extra_cost": 0.05,
+    "benefit": 1.0,
+    "customer_dependence": 0.5,
+    "external_effect_boost": 0.2
+  },
+  "seed": 7,
+  "parameter_status": "demonstration; not calibrated",
+  "versions": {
+    "python": "3.12.14",
+    "numpy": "2.3.5",
+    "pandas": "3.0.1",
+    "networkx": "3.4.2",
+    "matplotlib": "3.9.2"
+  }
+}

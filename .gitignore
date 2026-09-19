@@ -1,0 +1,7 @@
+.packages/
+.venv/
+__pycache__/
+*.pyc
+ouyputs/
+outputs/information_experiment/decisions.csv
+outputs/information_experiment_v2/decisions.csv

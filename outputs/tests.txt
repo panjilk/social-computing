@@ -1,0 +1,24 @@
+test_abstain (test_channels.ChannelTests.test_abstain) ... ok
+test_multi_counted_once (test_channels.ChannelTests.test_multi_counted_once) ... ok
+test_objective_does_not_change_belief (test_channels.ChannelTests.test_objective_does_not_change_belief) ... ok
+test_zero_effect_stays_zero (test_channels.ChannelTests.test_zero_effect_stays_zero) ... ok
+test_accounting_and_tracking (test_model.ModelTests.test_accounting_and_tracking) ... ok
+test_delay_and_capacity (test_model.ModelTests.test_delay_and_capacity) ... ok
+test_hand_path (test_model.ModelTests.test_hand_path) ... ok
+test_isolates_zero_and_seeds (test_model.ModelTests.test_isolates_zero_and_seeds) ... ok
+test_new_case_after_resolution (test_model.ModelTests.test_new_case_after_resolution) ... ok
+test_no_disputes (test_model.ModelTests.test_no_disputes) ... ok
+test_no_resolution (test_model.ModelTests.test_no_resolution) ... ok
+test_pairing (test_model.ModelTests.test_pairing) ... ok
+test_reproducible (test_model.ModelTests.test_reproducible) ... ok
+test_response_is_not_resolution (test_model.ModelTests.test_response_is_not_resolution) ... ok
+test_current_and_remembered_complaint_counts_once (test_visibility.VisibilityTests.test_current_and_remembered_complaint_counts_once) ... ok
+test_instant_resolution_does_not_hide_synchronous_path (test_visibility.VisibilityTests.test_instant_resolution_does_not_hide_synchronous_path) ... ok
+test_invalid_observation_configuration (test_visibility.VisibilityTests.test_invalid_observation_configuration) ... ok
+test_ongoing_visible_beyond_window_and_no_history_is_invisible (test_visibility.VisibilityTests.test_ongoing_visible_beyond_window_and_no_history_is_invisible) ... ok
+test_window_includes_next_round_and_expires_exactly (test_visibility.VisibilityTests.test_window_includes_next_round_and_expires_exactly) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 0.144s
+
+OK
